@@ -9,7 +9,9 @@ explode = [0.1, 0.1, 0.1, 0.1]
 
 # КОМЕНТИ!!!!!!
 
-with open('товари.txt', 'r', encoding='utf-8') as file:
+# Складаємо шлях
+
+with open('../5_file/0_file_txt/товари.txt', 'r', encoding='utf-8') as file:
     for line in file :
         parts = line.strip().split()
         if len(parts) == 3:
@@ -34,9 +36,6 @@ plt.pie(
 )
 plt.title('Кількість товарів на складі')
 plt.show()
-
-
-
 
 plt.bar(товари, ціна, color=colors[0])
 plt.title('Ціна товарів')

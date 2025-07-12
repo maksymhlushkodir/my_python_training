@@ -4,7 +4,7 @@ from setuptools.command.rotate import rotate
 games = []
 ratings = []
 
-with open('games.txt', 'r', encoding='utf-8') as file_r:
+with open('../5_file/0_file_txt/games.txt', 'r', encoding='utf-8') as file_r:
     for line in file_r:
         line = line.strip()
         if line:
@@ -20,7 +20,7 @@ while True:
 
     if user_choice == '1':
         add_game = input("game-name and game-estimates")
-        with open('games.txt', 'a', encoding='utf-8') as file_a:
+        with open('../5_file/0_file_txt/games.txt', 'a', encoding='utf-8') as file_a:
             file_a.write("\n" + add_game + "\n")
             games.append(add_game)
 

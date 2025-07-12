@@ -8,7 +8,7 @@ ratings = []
 colors = []
 explode=[]
 
-with open('games2.txt', 'r', encoding='utf-8') as file_games_txt_r:
+with open('../5_file/0_file_txt/games2.txt', 'r', encoding='utf-8') as file_games_txt_r:
     for line in file_games_txt_r:
         line = line.strip() # Видаляємо зайві пробіли та \n
         if line : # Якщо рядок не порожній
@@ -28,7 +28,7 @@ while True:
 
     if user_choice == '1':
         user_game_rating = input("name game ',' game rating ")
-        with open('games2.txt', 'a', encoding='utf-8') as file_games_txt_a:
+        with open('../5_file/0_file_txt/games2.txt', 'a', encoding='utf-8') as file_games_txt_a:
             file_games_txt_a.write("\n" + user_game_rating)
 
     elif user_choice == '2':
