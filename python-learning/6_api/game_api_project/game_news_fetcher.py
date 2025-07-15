@@ -1,9 +1,15 @@
-import numpy
+# Data obtained from the RAWG API (https://rawg.io/apidocs)
+
 import requests
 import os
-import pandas
 import json
 from dotenv import load_dotenv
+
+try:
+    import requests
+except ImportError:
+    print("Бібліотека 'requests' не встановлена. Спробуйте: pip install requests")
+    exit()
 
 load_dotenv() # Завантажує змінні з .env файлу
 API_KEY = os.getenv("RAWG_API_KEY")  # Ключ у файлі .env
@@ -36,10 +42,11 @@ if response.status_code == 200:
         print(f"🔹 Рейтинг: {rating}")
         print(f"🔹 Дата виходу: {released}")
         print(f"🔹 Розробник: {developer}")
-        print(f"🔹 Платформи: {', '.join(platform_names)}")
+        print("🔹 Платформи:")
+        for name in platform_names:
+            print(f"   - {name}")
+
     else:
-        print("Гру не знайдено 😢")
+        print("Error: Гру не знайдено ")
 else:
     print(f"Помилка запиту: {response.status_code}")
-
-
