@@ -9,44 +9,94 @@ try:
     import requests
 except ImportError:
     print("Бібліотека 'requests' не встановлена. Спробуйте: pip install requests")
+    input("exit")
     exit()
 
 load_dotenv() # Завантажує змінні з .env файлу
 API_KEY = os.getenv("RAWG_API_KEY")  # Ключ у файлі .env
-game_name = input("Введіть назву гри:").strip()
 
-# Робимо запит до API
-url = f"https://api.rawg.io/api/games?key={API_KEY}&search={game_name}"
-response = requests.get(url)
+while True:
+    user_choice = input("[1. find the game / 2. read the .json file / 3. exit]\n:")
 
-if response.status_code == 200:
-    data = response.json() # Отримуємо JSON
+    if user_choice == '1':
+        game_name = input("Введіть назву гри:").strip()
+        if not game_name:
+            print("❗ Назва гри не може бути пустою!")
+            continue
 
-    if data['count'] > 0: #Якщо є результати
-        game = data['results'][0] # Беремо першу гру
+        # Робимо запит до API
+        url = f"https://api.rawg.io/api/games?key={API_KEY}&search={game_name}"
+        response = requests.get(url)
 
-        # Отримуємо дані (можуть бути відсутні, тому обережно)
-        rating = game.get("rating", "Немає даних")
-        released = game.get("released", "Немає даних")
+        if response.status_code == 200:
+            data = response.json() # Отримуємо JSON
 
-        # Розробники (перший у списку)
-        developers = game.get("developers", [])
-        developer = developers[0]['name'] if developers else "Немає даних"
+            if data['count'] > 0: #Якщо є результати
+                game = data['results'][0] # Беремо першу гру
 
-        # Платформи (список)
-        platforms = game.get("platforms", [])
-        platform_names = [p['platform']['name'] for p in platforms] if platforms else ['Немає даних']
+                game_info = {
+                    # Отримуємо дані (можуть бути відсутні, тому обережно)
+                    "name" : game.get("name", "Немає даних"),
+                    "rating" : game.get("rating", "Немає даних"),
+                    "released" : game.get("released", "Немає даних"),
+                    # Розробники (перший у списку)
+                    "developers" : developers[0]['name'] if (developers := game.get("developers", [])) else "Немає даних",
+                    # Платформи (список)
+                    "platforms" : [p['platform']['name'] for p in platforms ] if (
+                    platforms := game.get("platforms", [])) else ["Немає даних"]
+                }
 
-        # Виводимо інформацію
-        print(f"\nІнформація про гру '{game['name']}':")
-        print(f"🔹 Рейтинг: {rating}")
-        print(f"🔹 Дата виходу: {released}")
-        print(f"🔹 Розробник: {developer}")
-        print("🔹 Платформи:")
-        for name in platform_names:
-            print(f"   - {name}")
+                #відображаємо красивіше і зрозуміліше
+                def print_game_info(info):
+                    print(f"\n📜 Інформація про гру: {game_info['name']}")
+                    print(f"⭐ Рейтинг: {game_info['rating']}")
+                    print(f"📅 Дата виходу: {game_info['released']}")
+                    print(f"👨‍💻 Розробник: {game_info['developers']}")
+                    print(f"🎮 Платформи: .join{game_info['platforms']}") # .join для більш читабельності
+
+                print_game_info(game_info)
+
+            else:
+                print("🔍 Гру не знайдено! Спробуйте іншу назву.")
+
+        elif response.status_code == 404:
+            print("🌐 Помилка: API не знайдено (404)")
+        else:
+            print(f"🌐 Помилка API: {response.status_code}")
+
+        # зберігання даних ігри
+        user_save = input("[1. load data / 2. repeat / 3. exit]\n:")
+
+        if user_save == '1':
+            user_file_name = input("name the file\n:")
+
+            with open(f"../../5_file/2_file_json/{user_file_name}.json", 'w', encoding='utf-8') as file :
+                # ensure_ascii=False для коректного відображення кирилиці
+                json.dump(game_info, file, ensure_ascii=False, indent=4)
+                print("the data has been saved")
+
+        elif user_save == '2':
+            print()
+
+        elif user_choice == '3':
+            exit()
+
+        else:
+            print("Error")
+
+    elif user_choice == '2':
+        user_file_name_r = input("Write the name of the file: ")  # Назва без розширення
+        try:
+            with open(f"../../5_file/2_file_json/{user_file_name_r}.json", 'r', encoding='utf-8') as file_r:
+                file_content = file_r.read()  # Читаємо весь вміст
+                print(file_content)  # Виводимо вміст
+        except FileNotFoundError:
+            print("😱 Файл не знайдено! Перевір назву або шлях.")
+        except Exception as e:
+            print(f"🚨 Помилка: {e}")
+
+    elif user_choice == '3':
+        exit()
 
     else:
-        print("Error: Гру не знайдено ")
-else:
-    print(f"Помилка запиту: {response.status_code}")
+        print("Error")
