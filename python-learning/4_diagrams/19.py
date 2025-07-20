@@ -11,7 +11,7 @@ explode = [0.1, 0.1, 0.1, 0.1]
 
 # Складаємо шлях
 
-with open('../5_file/0_file_txt/товари.txt', 'r', encoding='utf-8') as file:
+with open('../5_file-assets/1_file_txt/for_diagrams/товари.txt', 'r', encoding='utf-8') as file:
     for line in file :
         parts = line.strip().split()
         if len(parts) == 3:

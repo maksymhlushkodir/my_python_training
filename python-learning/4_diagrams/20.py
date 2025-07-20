@@ -4,7 +4,7 @@ from setuptools.command.rotate import rotate
 games = []
 ratings = []
 
-with open('../5_file/0_file_txt/games.txt', 'r', encoding='utf-8') as file_r:
+with open('../5_file-assets/1_file_txt/for_diagrams/ratings-games_1.txt', 'r', encoding='utf-8') as file_r:
     for line in file_r:
         line = line.strip()
         if line:

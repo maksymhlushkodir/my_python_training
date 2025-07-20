@@ -8,7 +8,7 @@ ratings = []
 colors = []
 explode=[]
 
-with open('../5_file/0_file_txt/games2.txt', 'r', encoding='utf-8') as file_games_txt_r:
+with open('../5_file-assets/1_file_txt/for_diagrams/ratings-games_2.txt', 'r', encoding='utf-8') as file_games_txt_r:
     for line in file_games_txt_r:
         line = line.strip() # Видаляємо зайві пробіли та \n
         if line : # Якщо рядок не порожній

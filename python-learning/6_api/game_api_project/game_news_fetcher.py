@@ -70,7 +70,7 @@ while True:
         if user_save == '1':
             user_file_name = input("name the file\n:")
 
-            with open(f"../../5_file/2_file_json/{user_file_name}.json", 'w', encoding='utf-8') as file :
+            with open(f"../../5_file-assets/3_file_json/for_gameNews/{user_file_name}.json", 'w', encoding='utf-8') as file :
                 # ensure_ascii=False для коректного відображення кирилиці
                 json.dump(game_info, file, ensure_ascii=False, indent=4)
                 print("the data has been saved")
@@ -87,7 +87,7 @@ while True:
     elif user_choice == '2':
         user_file_name_r = input("Write the name of the file: ")  # Назва без розширення
         try:
-            with open(f"../../5_file/2_file_json/{user_file_name_r}.json", 'r', encoding='utf-8') as file_r:
+            with open(f"../../5_file-assets/3_file_json/for_gameNews/{user_file_name_r}.json", 'r', encoding='utf-8') as file_r:
                 file_content = file_r.read()  # Читаємо весь вміст
                 print(file_content)  # Виводимо вміст
         except FileNotFoundError:
