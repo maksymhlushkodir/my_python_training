@@ -36,9 +36,9 @@ button = Button(350, 250, 100, 50, colors)
 count = 0
 
 try:
-    sound = pygame.mixer.Sound('../../5_file-assets/0_assets/for_Clicker/sount/click_sound.wav')  # Завантажуємо звук
+    sound = pygame.mixer.Sound('../../5_file-assets/0_assets/for_Clicker/sound/click_sound.wav')  # Завантажуємо звук
 except:
-    print("Не знайшов файл звуку!")
+    print("ERROR: Sound file not found!")
 print("Sound played!")
 
 
