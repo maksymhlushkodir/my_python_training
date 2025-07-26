@@ -50,15 +50,23 @@ class Button:
         self.text = new_text  # Змінюємо текст
 
     def is_clicked(self, mouse_pos):
-        return self.coordinates.collidepoint(mouse_pos)
+        return  self.coordinates.collidepoint(mouse_pos)
 
+feedback = ""
 
 start_button = Button(300, 400, 200, 60, "Try", color_start_button)
-counter_button = Button(90, 400, 125, 60, f"counter:", color_counter_button)
+counter_button = Button(90, 400, 125, 60, f"counter:{counter}", color_counter_button)
 re_zero_button = Button(590, 400, 125, 60, "RE:ZERO", color_re_zero_button)
-hint_button = Button(300, 100, 200, 100, '', color_hint_button)
-input_button = Button(350, 270, 100, 60, 'input:', color_input_button)
+hint_button = Button(300, 100, 200, 100, feedback, color_hint_button)
+input_button = Button(350, 270, 100, 60, f'input:{User_text}', color_input_button)
 record_button = Button(340, 65, 125, 40, f'record:', color_record_button)
+
+def reset_game(): #Твоя функція для скидання
+    counter = 0
+    User_text = ''
+    pc_number = random.randint(1, 100)
+
+
 
 running = True
 while running:
@@ -68,47 +76,53 @@ while running:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if start_button.is_clicked(mouse_pos):
                 sound_click.play()
-            elif counter_button.is_clicked(mouse_pos):
-                sound_click.play()
+                counter += 1
             elif re_zero_button.is_clicked(mouse_pos):
                 sound_click.play()
-            #...
 
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:  # Натиснута "1"
                 User_text += "1"  # Додаємо цифру до рядка
             elif event.key == pygame.K_2:
-                print(2)
+                User_text += "2"
             elif event.key == pygame.K_3:
-                print(3)
+                User_text += "3"
             elif event.key == pygame.K_4:
-                print(4)
+                User_text += "4"
             elif event.key == pygame.K_5:
-                print(5)
+                User_text += "5"
             elif event.key == pygame.K_6:
-                print(6)
+                User_text += "6"
             elif event.key == pygame.K_7:
-                print(7)
+                User_text += "7"
             elif event.key == pygame.K_8:
-                print(8)
+                User_text += "8"
             elif event.key == pygame.K_9:
-                print(9)
+                User_text += "9"
             elif event.key == pygame.K_0:
-                print(0)
+                User_text += "0"
             elif event.key == pygame.K_BACKSPACE:
                 User_text = User_text[:-1]  # Видаляємо останній символ
-
-                hint_text = ""
-                if User_text < pc_number:
-                    hint_text = "more! ▲"
-                elif User_text > pc_number:
-                    hint_text = "Less! ▼"
-                elif User_text == pc_number:
-                    hint_text = "Correct!"
 
             elif event.key == pygame.K_ESCAPE:  # ESC
                 print("Are you pressing ESC? Does Echidna (re:zero) offer tea?")
                 running = False
+
+            elif event.key == pygame.K_RETURN:  # Натиснули ентер
+                try:
+                    guess = int(User_text)  # Перетворюємо введений текст в число
+                    counter += 1  # +1 спроба
+
+                    feedback = ""
+
+                    if guess < pc_number:
+                        feedback += "more! ▲"
+                    elif guess > pc_number:
+                        feedback += "Less! ▼"
+                    else:
+                        feedback += f"Correct! is: {pc_number}"
+                except ValueError:
+                    feedback = "Введіть число!"
 
     screen.fill(WHITE)
     counter_button.draw(screen)
@@ -117,7 +131,6 @@ while running:
     re_zero_button.draw(screen)
     hint_button.draw(screen)
     input_button.draw(screen)
-
 
     pygame.display.flip()  # Оновлюємо екран
     clock.tick(60)  # 60 FPS
