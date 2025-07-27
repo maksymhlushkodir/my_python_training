@@ -52,32 +52,33 @@ class Button:
     def is_clicked(self, mouse_pos):
         return  self.coordinates.collidepoint(mouse_pos)
 
-feedback = ""
-
-start_button = Button(300, 400, 200, 60, "Try", color_start_button)
-counter_button = Button(90, 400, 125, 60, f"counter:{counter}", color_counter_button)
-re_zero_button = Button(590, 400, 125, 60, "RE:ZERO", color_re_zero_button)
-hint_button = Button(300, 100, 200, 100, feedback, color_hint_button)
-input_button = Button(350, 270, 100, 60, f'input:{User_text}', color_input_button)
-record_button = Button(340, 65, 125, 40, f'record:', color_record_button)
-
-def reset_game(): #Твоя функція для скидання
-    counter = 0
-    User_text = ''
-    pc_number = random.randint(1, 100)
-
-
-
 running = True
 while running:
+    feedback = ""
+
+    def reset_game():  # Твоя функція для скидання
+        counter = 0
+        User_text = ''
+        pc_number = random.randint(1, 100)
+
+    start_button = Button(300, 400, 200, 60, "Try", color_start_button)
+    counter_button = Button(90, 400, 125, 60, f"counter:{counter}", color_counter_button)
+    re_zero_button = Button(590, 400, 125, 60, "Reset", color_re_zero_button)
+    hint_button = Button(300, 100, 200, 100, feedback, color_hint_button)
+    input_button = Button(350, 270, 100, 60, f'input:{User_text}', color_input_button)
+    record_button = Button(340, 65, 125, 40, f'record:', color_record_button)
+
+    mouse_pos = pygame.mouse.get_pos()  # Отримуємо позицію мишки КОЖЕН кадр
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
+        elif event.type == pygame.MOUSEBUTTONDOWN:  # Це ОКРЕМИЙ блок
             if start_button.is_clicked(mouse_pos):
-                sound_click.play()
                 counter += 1
+                sound_click.play()
             elif re_zero_button.is_clicked(mouse_pos):
+                reset_game()
                 sound_click.play()
 
         elif event.type == pygame.KEYDOWN:
