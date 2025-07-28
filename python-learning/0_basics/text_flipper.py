@@ -1,7 +1,7 @@
 import tkinter as tk
 
 screen = tk.Tk()
-screen.title("Text flipper")
+screen.title("Text Flipper Pro")
 screen.geometry("800x600")
 
 text_input = tk.Entry(screen, width=20, font=("Arial", 20))
@@ -11,11 +11,30 @@ label = tk.Label(screen, text="Тут буде твій текст...", font=("A
 label.pack(pady=10)
 
 def text_flipper():
-    user_text = text_input.get()  # Отримуємо текст з Entry
-    reversed_text = user_text[::-1]  # Перевертаємо текст
-    label.config(text=f"Ваш інвертований текст: {reversed_text}")  # Виводимо
+    user_text = text_input.get()  # Отримуємо поточний текст
+    reversed_text = user_text[::-1]  # Інвертуємо рядок
+    label.config(text=f"Інвертований текст: {reversed_text}")
 
-button = tk.Button(screen, text="перевернути текст", command=text_flipper, bg="#009933", fg="white")
-button.pack(pady=10)
+def text_clear():
+    text_input.delete(0, tk.END)  # Очищаємо поле вводу
+    label.config(text="Тут буде твій текст...")  # Скидаємо напис
+
+button_flip = tk.Button(
+    screen,
+    text="Перевернути текст",
+    command=text_flipper,
+    bg="#009933",
+    fg="white"
+)
+button_flip.pack(pady=10)
+
+button_clear = tk.Button(
+    screen,
+    text="Очистити",
+    command=text_clear,
+    bg="#ff0000",  # Червоний для наочності
+    fg="white"
+)
+button_clear.pack(pady=10)
 
 screen.mainloop()

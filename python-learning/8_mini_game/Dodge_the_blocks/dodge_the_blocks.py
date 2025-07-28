@@ -65,6 +65,19 @@ class Score:
     def increase(self, point):
         point += 1
 
+class Button:
+
+    def __init__(self, x, y, width, height, text, color):
+        self.rect = pygame.Rect((x, y,), (width, height))
+        self.color = color
+        self.text = text
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, self.rect)
+
+    def is_clicked(self, mouse_pos):
+        return  self.rect.collidepoint(mouse_pos)
+
 creation = random.randint(0, 750)
 
 mitiorites_1 = []
@@ -76,20 +89,71 @@ score = []
 obstacle_timer = 0
 score_timer = 0
 
+game_active = True  # Початковий стан
+
+def draw_game_over_screen(final_score):
+    while not game_active: # Поки гра на паузі
+        screen.fill(0, 0, 0, 128)  # Напівпрозорий чорний фон
+        #draw_text("GAME OVER", font_big, (400, 200))
+        #draw_text(f"Рахунок: {final_score}", font_small, (400, 250))
+
+        #restart_button.draw(screen)  # Малюємо кнопку
+
 running = True
 while running:
 
-    obstacle_timer += 1
-    score_timer += 1
-    if obstacle_timer >= 60: # Кожну секунду (60 FPS)
-        mitiorites_1.append(Obstacle(random.randint(0, 365), -50)) # Спочатку над екраном
-        mitiorites_2.append(Obstacle(random.randint(376, 750), -50)) # Спочатку над екраном
-        mitiorites_3.append(Obstacle(random.randint(0, 750), -50)) # Спочатку над екраном
-        obstacle_timer = 0
+    if game_active:
+        obstacle_timer += 1
+        score_timer += 1
+        if obstacle_timer >= 60:  # Кожну секунду (60 FPS)
+            mitiorites_1.append(Obstacle(random.randint(0, 365), -50))  # Спочатку над екраном
+            mitiorites_2.append(Obstacle(random.randint(376, 750), -50))  # Спочатку над екраном
+            mitiorites_3.append(Obstacle(random.randint(0, 750), -50))  # Спочатку над екраном
+            obstacle_timer = 0
 
-    if score_timer >= 120:
-        score.append(Score(random.randint(0, 750), -50)) # Спочатку над екраном
-        score_timer = 0
+        if score_timer >= 120:
+            score.append(Score(random.randint(0, 750), -50))  # Спочатку над екраном
+            score_timer = 0
+
+        screen.fill(space)
+        player.draw(screen)
+        player.update()
+
+        for sc in score:
+            sc.update()
+            sc.draw(screen)
+            if sc.rect.top > 600:  # Якщо повністю за екраном
+                score.remove(sc)  # Видаляємо
+
+        for ob in mitiorites_1:
+            ob.update()
+            ob.draw(screen)
+            if ob.rect.top > 600:  # Якщо повністю за екраном
+                mitiorites_1.remove(ob)  # Видаляємо
+            if ob.collide(player):
+                game_active = False
+
+        for ob in mitiorites_2:
+            ob.update()
+            ob.draw(screen)
+            if ob.rect.top > 600:  # Якщо повністю за екраном
+                mitiorites_2.remove(ob)  # Видаляємо
+            if ob.collide(player):
+                game_active = False
+
+        for ob in mitiorites_3:
+            ob.update()
+            ob.draw(screen)
+            if ob.rect.top > 600:  # Якщо повністю за екраном
+                mitiorites_3.remove(ob)  # Видаляємо
+            if ob.collide(player):
+                game_active = False
+
+        pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)  # Червона рамка
+
+    else:
+        #Малюємо екран Game Over
+        draw_game_over_screen()
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -106,35 +170,6 @@ while running:
                 player.rect.x += player.speed
             if keys[pygame.K_RIGHT] and player.rect.right < 800:  # Права межа
                 player.rect.x += player.speed
-
-    screen.fill(space)
-    player.draw(screen)
-    player.update()
-    for sc in score:
-        sc.update()
-        sc.draw(screen)
-        if sc.rect.top > 600: # Якщо повністю за екраном
-            score.remove(sc) # Видаляємо
-
-    for ob in mitiorites_1:
-        ob.update()
-        ob.draw(screen)
-        if ob.rect.top > 600: # Якщо повністю за екраном
-            mitiorites_1.remove(ob) # Видаляємо
-
-    for ob in mitiorites_2:
-        ob.update()
-        ob.draw(screen)
-        if ob.rect.top > 600: # Якщо повністю за екраном
-            mitiorites_2.remove(ob) # Видаляємо
-
-    for ob in mitiorites_3:
-        ob.update()
-        ob.draw(screen)
-        if ob.rect.top > 600:  # Якщо повністю за екраном
-            mitiorites_3.remove(ob)  # Видаляємо
-
-    pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)  # Червона рамка
 
     pygame.display.flip() # Оновлюємо екран
     clock.tick(60) # 60 FPS
