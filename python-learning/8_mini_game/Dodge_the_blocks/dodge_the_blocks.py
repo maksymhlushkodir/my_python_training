@@ -67,19 +67,27 @@ class Score:
 
 creation = random.randint(0, 750)
 
-mitiorites = Obstacle(creation, 1)
+mitiorites_1 = []
+mitiorites_2 = []
 player = Player(375, 500)
-score = Score(creation, 1)
+score = []
 
 obstacle_timer = 0
+score_timer = 0
 
 running = True
 while running:
 
     obstacle_timer += 1
+    score_timer += 1
     if obstacle_timer >= 60: # Кожну секунду (60 FPS)
-        mitiorites.append(Obstacle(random.randint(0, 750), -50)) # Спочатку над екраном
+        mitiorites_1.append(Obstacle(random.randint(0, 750), -50)) # Спочатку над екраном
+        mitiorites_2.append(Obstacle(random.randint(0, 750), -50)) # Спочатку над екраном
         obstacle_timer = 0
+
+    if score_timer >= 120:
+        score.append(Score(random.randint(0, 750), -50)) # Спочатку над екраном
+        score_timer = 0
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -98,10 +106,23 @@ while running:
     screen.fill(space)
     player.draw(screen)
     player.update()
-    score.draw(screen)
-    score.update()
-    mitiorites.draw(screen)
-    mitiorites.update()
+    for sc in score:
+        sc.update()
+        sc.draw(screen)
+        if sc.rect.top > 600:
+            score.remove(sc)
+    for ob in mitiorites_1:
+        ob.update()
+        ob.draw(screen)
+        if ob.rect.top > 600: # Якщо повністю за екраном
+            mitiorites_1.remove(ob) # Видаляємо
+
+    for ob in mitiorites_2:
+        ob.update()
+        ob.draw(screen)
+        if ob.rect.top > 600:
+            mitiorites_2.remove(ob)
+
     pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)  # Червона рамка
 
     pygame.display.flip() # Оновлюємо екран
