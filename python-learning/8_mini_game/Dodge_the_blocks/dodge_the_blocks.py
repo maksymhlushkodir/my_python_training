@@ -69,6 +69,7 @@ creation = random.randint(0, 750)
 
 mitiorites_1 = []
 mitiorites_2 = []
+mitiorites_3 = []
 player = Player(375, 500)
 score = []
 
@@ -81,8 +82,9 @@ while running:
     obstacle_timer += 1
     score_timer += 1
     if obstacle_timer >= 60: # Кожну секунду (60 FPS)
-        mitiorites_1.append(Obstacle(random.randint(0, 750), -50)) # Спочатку над екраном
-        mitiorites_2.append(Obstacle(random.randint(0, 750), -50)) # Спочатку над екраном
+        mitiorites_1.append(Obstacle(random.randint(0, 365), -50)) # Спочатку над екраном
+        mitiorites_2.append(Obstacle(random.randint(376, 750), -50)) # Спочатку над екраном
+        mitiorites_3.append(Obstacle(random.randint(0, 750), -50)) # Спочатку над екраном
         obstacle_timer = 0
 
     if score_timer >= 120:
@@ -92,6 +94,8 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            print()
         elif event == pygame.KEYDOWN:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_a] and player.rect.left > 0:  # Ліва межа
@@ -109,8 +113,9 @@ while running:
     for sc in score:
         sc.update()
         sc.draw(screen)
-        if sc.rect.top > 600:
-            score.remove(sc)
+        if sc.rect.top > 600: # Якщо повністю за екраном
+            score.remove(sc) # Видаляємо
+
     for ob in mitiorites_1:
         ob.update()
         ob.draw(screen)
@@ -120,8 +125,14 @@ while running:
     for ob in mitiorites_2:
         ob.update()
         ob.draw(screen)
-        if ob.rect.top > 600:
-            mitiorites_2.remove(ob)
+        if ob.rect.top > 600: # Якщо повністю за екраном
+            mitiorites_2.remove(ob) # Видаляємо
+
+    for ob in mitiorites_3:
+        ob.update()
+        ob.draw(screen)
+        if ob.rect.top > 600:  # Якщо повністю за екраном
+            mitiorites_3.remove(ob)  # Видаляємо
 
     pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)  # Червона рамка
 
