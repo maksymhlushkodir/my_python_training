@@ -93,6 +93,23 @@ score_point = 0
 
 game_active = True  # Початковий стан
 
+def restart_game():
+    global player, mitiorites, score, obstacle_timer, game_active
+
+    # Скидаємо позицію гравця
+    player.rect.x = 800 // 2
+    player.rect.y = 600 - player.rect.height - 10
+
+    # Очищаємо перешкоди
+    mitiorites.clear()
+
+    # Скидаємо очки та таймер
+    score = 0
+    obstacle_timer = 0
+
+    # Активуємо гру
+    game_active = True
+
 def draw_game_over_screen(final_score):
     while not game_active:  # Поки гра на паузі
         mouse_pos = pygame.mouse.get_pos()
@@ -113,6 +130,7 @@ def draw_game_over_screen(final_score):
                     return True  # Повертаємо сигнал для рестарту
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
+                    restart_game()
                     return True
 
         pygame.display.flip()
@@ -120,6 +138,19 @@ def draw_game_over_screen(final_score):
 
 time_game = 0
 time_game_in_seconds = 0
+
+rocket_frames = [
+    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket1.png"),
+    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket2.png"),
+    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket3.png"),
+    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket4.png"),
+    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket5.png"),
+    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket6.png"),
+]
+
+current_frame = 0
+animation_timer = 0
+ANIMATION_SPEED = 10  # кожні 10 кадрів буде зміна
 
 running = True
 while running:
@@ -148,10 +179,8 @@ while running:
         screen.blit(text_time, (50, 50))  # Координати (x, y)
         #screen.blit(text_time,
         screen.fill(space)
-        player.draw(screen)
+        pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)
         player.update()
-
-
 
         for sc in score:
             sc.update()
@@ -187,6 +216,12 @@ while running:
                 game_active = False
 
         pygame.draw.rect(screen, (255, 0, 0), player.rect, 2)  # Червона рамка
+        animation_timer += 1
+        if animation_timer >= ANIMATION_SPEED:
+            current_frame = (current_frame + 1) % len(rocket_frames)
+            animation_timer = 0
+
+        screen.blit(rocket_frames[current_frame], (player.rect.x, player.rect.y))
 
     else:
         #Малюємо екран Game Over
