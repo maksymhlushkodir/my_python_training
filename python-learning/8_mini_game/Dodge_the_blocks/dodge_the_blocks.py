@@ -80,6 +80,7 @@ class Button:
 
 creation = random.randint(0, 750)
 
+rezero_button = Button(300, 400, 200, 60, "Restart", (51, 51, 204))
 mitiorites_1 = []
 mitiorites_2 = []
 mitiorites_3 = []
@@ -88,16 +89,34 @@ score = []
 
 obstacle_timer = 0
 score_timer = 0
+score_point = 0
 
 game_active = True  # Початковий стан
 
-def draw_game_over_screen(final_score):
-    while not game_active: # Поки гра на паузі
-        screen.fill(0, 0, 0, 128)  # Напівпрозорий чорний фон
-        #draw_text("GAME OVER", font_big, (400, 200))
-        #draw_text(f"Рахунок: {final_score}", font_small, (400, 250))
+mouse_pos = pygame.mouse.get_pos()
 
-        #restart_button.draw(screen)  # Малюємо кнопку
+def draw_game_over_screen(final_score):
+    while not game_active:  # Поки гра на паузі
+        screen.fill((0, 0, 0, 128))  # Напівпрозорий чорний фон
+        draw_text = font.render("GAME OVER", True, (255, 255, 255))
+        draw_text_score = font.render(f"Рахунок: {final_score}", True, (255, 255, 255))
+        screen.blit(draw_text, (50, 50))
+        screen.blit(draw_text_score, (50, 80))
+
+        rezero_button.draw(screen)  # Малюємо кнопку
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                print()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if rezero_button.is_clicked(mouse_pos):
+                    return True  # Повертаємо сигнал для рестарту
+
+        pygame.display.flip()
+    return False
+
+time_game = 0
+time_game_in_seconds = 0
 
 running = True
 while running:
@@ -105,6 +124,12 @@ while running:
     if game_active:
         obstacle_timer += 1
         score_timer += 1
+
+        time_game += 1
+        if time_game >= 60:
+            time_game_in_seconds += 1
+            time_game = 0
+
         if obstacle_timer >= 60:  # Кожну секунду (60 FPS)
             mitiorites_1.append(Obstacle(random.randint(0, 365), -50))  # Спочатку над екраном
             mitiorites_2.append(Obstacle(random.randint(376, 750), -50))  # Спочатку над екраном
@@ -115,15 +140,24 @@ while running:
             score.append(Score(random.randint(0, 750), -50))  # Спочатку над екраном
             score_timer = 0
 
+        text_score =  font.render(f"time game: {time_game_in_seconds}", True, (255, 255, 255))  # Текст білому кольору
+        text_time = font.render(f"time game: {time_game_in_seconds}", True, (255, 255, 255))  # Текст білому кольору
+        screen.blit(text_time, (50, 50))  # Координати (x, y)
+        #screen.blit(text_time,
         screen.fill(space)
         player.draw(screen)
         player.update()
+
+
 
         for sc in score:
             sc.update()
             sc.draw(screen)
             if sc.rect.top > 600:  # Якщо повністю за екраном
                 score.remove(sc)  # Видаляємо
+            if sc.collide(player):
+                score_point += 1
+                score.remove(sc) # Видаляємо
 
         for ob in mitiorites_1:
             ob.update()
@@ -153,7 +187,7 @@ while running:
 
     else:
         #Малюємо екран Game Over
-        draw_game_over_screen()
+        draw_game_over_screen(score_point)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
