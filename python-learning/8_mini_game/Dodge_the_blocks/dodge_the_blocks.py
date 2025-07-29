@@ -93,13 +93,12 @@ score_point = 0
 
 game_active = True  # Початковий стан
 
-mouse_pos = pygame.mouse.get_pos()
-
 def draw_game_over_screen(final_score):
     while not game_active:  # Поки гра на паузі
+        mouse_pos = pygame.mouse.get_pos()
         screen.fill((0, 0, 0, 128))  # Напівпрозорий чорний фон
         draw_text = font.render("GAME OVER", True, (255, 255, 255))
-        draw_text_score = font.render(f"Рахунок: {final_score}", True, (255, 255, 255))
+        draw_text_score = font.render(f"points: {final_score}", True, (255, 255, 255))
         screen.blit(draw_text, (50, 50))
         screen.blit(draw_text_score, (50, 80))
 
@@ -110,7 +109,11 @@ def draw_game_over_screen(final_score):
                 print()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if rezero_button.is_clicked(mouse_pos):
+                    print("click is found")
                     return True  # Повертаємо сигнал для рестарту
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    return True
 
         pygame.display.flip()
     return False
