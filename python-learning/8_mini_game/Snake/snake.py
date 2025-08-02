@@ -16,7 +16,8 @@ class GameState:
         self.state = "menu" # Початковий стан
 
         self.start_button = Button(300, 300, 200, 50, "Start", (0, 153, 51))  # Створюємо кнопку
-        self.pause_button = Button(600, 15, 50, 50, "pause", (102, 102, 153))
+        self.pause_button = Button(600, 15, 50, 50, "⏸", (102, 102, 153))
+        self.snake = Snake()
 
         self.states = {
             "menu": self.run_menu,
@@ -53,9 +54,10 @@ class GameState:
         game_zone = pygame.Rect(50, 75, 700, 475)
         pygame.draw.rect(screen, (0, 153, 51), game_zone)
         pygame.draw.rect(screen, (0, 163, 61), game_zone.inflate(10, 10), border_radius=5)
+        self.snake.draw(screen)
         self.pause_button.draw(screen)
+        self.snake.move()
         mouse_pos = pygame.mouse.get_pos()
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -106,7 +108,10 @@ class Snake:
             self.head.y -= 20
 
     def update(self):
-        print("Hello<-_->")
+        print("UPDATE")
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, (102, 102, 255), self.head)
 
 class Food:
     def __init__(self):
