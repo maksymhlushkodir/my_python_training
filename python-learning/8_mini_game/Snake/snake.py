@@ -30,17 +30,28 @@ class GameState:
         self.start_button.draw(screen)
 
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.MOUSEBUTTONDOWN:
                 print("ok")
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+            elif event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or event.key == pygame.K_1):
                 self.change_state("playing")  # Перехід у гру
         pygame.display.flip()  # Оновлюємо екран
         clock.tick(10)
 
     def run_game(self):
         print("run game")
+
+        screen.fill((0, 153, 51))
+        pygame.display.set_caption("Game")
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                print("ok")
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                print("ok")
+        pygame.display.flip()  # Оновлюємо екран
+        clock.tick(10)
 
     def run_pause(self):
         print("run pause")
@@ -79,8 +90,7 @@ class Snake:
         elif self.direction == "DOWN":
             self.head.y -= 20
 
-
-def update(self):
+    def update(self):
         print("Hello<-_->")
 
 class Food:
