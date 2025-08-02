@@ -2,6 +2,8 @@ import pygame
 import json
 import random
 
+from pygame.mixer import pause
+
 pygame.init()
 pygame.mixer.init()
 
@@ -12,7 +14,10 @@ clock = pygame.time.Clock()
 class GameState:
     def __init__(self):
         self.state = "menu" # Початковий стан
+
         self.start_button = Button(300, 300, 200, 50, "Start", (0, 153, 51))  # Створюємо кнопку
+        self.pause_button = Button(600, 15, 50, 50, "pause", (102, 102, 153))
+
         self.states = {
             "menu": self.run_menu,
             "playing": self.run_game,
@@ -28,26 +33,36 @@ class GameState:
         text_title = font.render("Snake", True, (0, 0, 0))
         screen.blit(text_title, (365, 200))
         self.start_button.draw(screen)
+        mouse_pos = pygame.mouse.get_pos()
+        self.change_state("playing")  # Перехід у гру #-----------------------------------------------------------------
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
-                print("ok")
+                if self.start_button.is_clicked(mouse_pos, (0, 183, 81)):
+                    self.change_state("playing")  # Перехід у гру
             elif event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or event.key == pygame.K_1):
                 self.change_state("playing")  # Перехід у гру
         pygame.display.flip()  # Оновлюємо екран
-        clock.tick(10)
+        clock.tick(60)
 
     def run_game(self):
         print("run game")
 
-        screen.fill((0, 153, 51))
+        screen.fill((0, 102, 0))
         pygame.display.set_caption("Game")
+        game_zone = pygame.Rect(50, 75, 700, 475)
+        pygame.draw.rect(screen, (0, 153, 51), game_zone)
+        pygame.draw.rect(screen, (0, 163, 61), game_zone.inflate(10, 10), border_radius=5)
+        self.pause_button.draw(screen)
+        mouse_pos = pygame.mouse.get_pos()
+
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                print("ok")
+                if self.pause_button.is_clicked(mouse_pos, (71, 71, 107)):
+                    print("OKAY")
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                 print("ok")
         pygame.display.flip()  # Оновлюємо екран
@@ -101,12 +116,16 @@ class Food:
 
 class Button:
     def __init__(self, x, y, width, height, text, color):
-        self.rect = ((x, y), (width, height))
+        self.rect = pygame.Rect(((x, y), (width, height)))
         self.text = text
         self.color = color
 
     def draw(self, surface):
         pygame.draw.rect(surface, self.color, self.rect, border_radius=13)
+
+    def is_clicked(self, mouse_pos, newcolor):
+        self.color = newcolor
+        return self.rect.collidepoint(mouse_pos)
 
 def main():
     print("OK bro")
