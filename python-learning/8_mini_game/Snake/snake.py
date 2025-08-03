@@ -1,8 +1,7 @@
 import pygame
 import json
 import random
-
-from pygame.mixer import pause
+import sys
 
 pygame.init()
 pygame.mixer.init()
@@ -35,16 +34,23 @@ class GameState:
         screen.blit(text_title, (365, 200))
         self.start_button.draw(screen)
         mouse_pos = pygame.mouse.get_pos()
-        self.change_state("playing")  # Перехід у гру #-----------------------------------------------------------------
+        #self.change_state("playing")  # Перехід у гру #-----------------------------------------------------------------
+
+        pygame.display.update()
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.start_button.is_clicked(mouse_pos, (0, 183, 81)):
                     self.change_state("playing")  # Перехід у гру
-            elif event.type == pygame.KEYDOWN and (event.key == pygame.K_RETURN or event.key == pygame.K_1):
-                self.change_state("playing")  # Перехід у гру
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    print("Okay K_return")
+                    self.change_state("playing")  # Перехід у гру
+                elif event.key == pygame.K_1:
+                    print("Okay K_1")
+                    self.change_state("playing")
         pygame.display.flip()  # Оновлюємо екран
-        clock.tick(60)
+        clock.tick(60) # обмеження до 60 FPS
 
     def run_game(self):
         print("run game")
@@ -57,18 +63,21 @@ class GameState:
         self.snake.draw(screen)
         self.pause_button.draw(screen)
         self.snake.move()
-        mouse_pos = pygame.mouse.get_pos()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
+                pygame.quit()
+                sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
                 if self.pause_button.is_clicked(mouse_pos, (71, 71, 107)):
                     print("OKAY")
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
-                print("ok")
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    print("ok")
+
         pygame.display.flip()  # Оновлюємо екран
-        clock.tick(10)
+        clock.tick(10) # обмеження до 10 FPS
 
     def run_pause(self):
         print("run pause")
@@ -98,13 +107,13 @@ class Snake:
         self.tail[0].x, self.tail[0].y = self.head.x, self.head.y
 
         # Рухаємо голову
-        if self.direction == "RIGHT":
+        if self.direction == "RIGHT" and self.direction != "LEFT":
             self.head.x += 20
-        elif self.direction == "LEFT":
+        elif self.direction == "LEFT" and self.direction != "RIGHT":
             self.head.x -= 20
-        elif self.direction == "UP":
+        elif self.direction == "UP" and self.direction != "DOWN":
             self.head.y += 20
-        elif self.direction == "DOWN":
+        elif self.direction == "DOWN" and self.direction != "UP":
             self.head.y -= 20
 
     def update(self):
@@ -133,19 +142,10 @@ class Button:
         return self.rect.collidepoint(mouse_pos)
 
 def main():
-    print("OK bro")
     game_state = GameState()
-
     while True:
-        # Викликаємо функцію-обробник поточного стану
         game_state.states[game_state.state]()
+        clock.tick(60)  # Загальний FPS для всіх станів
 
-        # Обробка подій (наприклад, закриття вікна)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                return
-
-running = True
-while running:
-    main()
+if __name__ == "__main__":
+    main()  # Запускаємо гру без зовнішнього циклу
