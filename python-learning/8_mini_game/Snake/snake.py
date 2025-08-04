@@ -34,8 +34,6 @@ class GameState:
         screen.blit(text_title, (365, 200))
         self.start_button.draw(screen)
         mouse_pos = pygame.mouse.get_pos()
-        #self.change_state("playing")  # Перехід у гру #-----------------------------------------------------------------
-
         pygame.display.update()
 
         for event in pygame.event.get():
@@ -44,25 +42,40 @@ class GameState:
                     self.change_state("playing")  # Перехід у гру
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    print("Okay K_return")
                     self.change_state("playing")  # Перехід у гру
                 elif event.key == pygame.K_1:
-                    print("Okay K_1")
                     self.change_state("playing")
         pygame.display.flip()  # Оновлюємо екран
         clock.tick(60) # обмеження до 60 FPS
 
     def run_game(self):
-        print("run game")
+        bill = 0
 
         screen.fill((0, 102, 0))
         pygame.display.set_caption("Game")
-        game_zone = pygame.Rect(50, 75, 700, 475)
+        game_zone = pygame.Rect(45, 65, 710, 490)
+        game_zone_decoration= pygame.Rect(25, 45, 750, 530)
+        pygame.draw.rect(screen, (68, 102, 0), game_zone_decoration)
         pygame.draw.rect(screen, (0, 153, 51), game_zone)
         pygame.draw.rect(screen, (0, 163, 61), game_zone.inflate(10, 10), border_radius=5)
+        text_bill = font.render(f"bill:{bill}", True, (0, 0, 0))
+        screen.blit(text_bill, (50, 25))
         self.snake.draw(screen)
         self.pause_button.draw(screen)
         self.snake.move()
+
+        if self.snake.head.x > 750:
+            print("update_1")
+            self.change_state("game_over")
+        elif self.snake.head.x < 30:
+            print("update_2")
+            self.change_state("game_over")
+        elif self.snake.head.y > 540:
+            print("update_3")
+            self.change_state("game_over")
+        elif self.snake.head.y < 50:
+            print("update_4")
+            self.change_state("game_over")
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -83,7 +96,9 @@ class GameState:
         print("run pause")
 
     def run_game_over(self):
-        print("run game over")
+        screen.fill((204, 51, 0))
+        pygame.display.flip()
+        clock.tick(60) # обмеження до 60 FPS
 
     def run_shop(self):
         print("run shop")
@@ -95,9 +110,10 @@ class GameState:
 
 class Snake:
     def __init__(self):
-        self.head = pygame.Rect(400, 300, 20, 20)
-        self.tail = [pygame.Rect(380, 300, 20, 20)]  # Початковий хвіст
-        self.direction = "RIGHT"
+        self.head = pygame.Rect(260, 300, 20, 20)
+        self.tail = [pygame.Rect(240, 300, 20, 20)]  # Початковий хвіст
+        self.status_game = GameState
+        #self.direction = "RIGHT"
 
     def move(self):
         # Оновлюємо хвіст
@@ -106,18 +122,26 @@ class Snake:
             self.tail[i].y = self.tail[i - 1].y
         self.tail[0].x, self.tail[0].y = self.head.x, self.head.y
 
-        # Рухаємо голову
-        if self.direction == "RIGHT" and self.direction != "LEFT":
-            self.head.x += 20
-        elif self.direction == "LEFT" and self.direction != "RIGHT":
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_a]:
             self.head.x -= 20
-        elif self.direction == "UP" and self.direction != "DOWN":
-            self.head.y += 20
-        elif self.direction == "DOWN" and self.direction != "UP":
+        elif keys[pygame.K_LEFT]:
+            self.head.x -= 20
+        elif keys[pygame.K_d]:
+            self.head.x += 20
+        elif keys[pygame.K_RIGHT]:
+            self.head.x += 20
+        elif keys[pygame.K_w]:
             self.head.y -= 20
+        elif keys[pygame.K_UP]:
+            self.head.y -= 20
+        elif keys[pygame.K_s]:
+            self.head.y += 20
+        elif keys[pygame.K_DOWN]:
+            self.head.y += 20
 
-    def update(self):
-        print("UPDATE")
+    #def update(self):
+
 
     def draw(self, screen):
         pygame.draw.rect(screen, (102, 102, 255), self.head)
