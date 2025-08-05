@@ -17,6 +17,9 @@ class GameState:
         self.start_button = Button(300, 300, 200, 50, "Start", (0, 153, 51))  # Створюємо кнопку
         self.pause_button = Button(600, 15, 50, 50, "⏸", (102, 102, 153))
         self.snake = Snake()
+        self.food = Food()
+        self.bill = 0
+        self.apple = []
 
         self.states = {
             "menu": self.run_menu,
@@ -58,11 +61,20 @@ class GameState:
         pygame.draw.rect(screen, (68, 102, 0), game_zone_decoration)
         pygame.draw.rect(screen, (0, 153, 51), game_zone)
         pygame.draw.rect(screen, (0, 163, 61), game_zone.inflate(10, 10), border_radius=5)
-        text_bill = font.render(f"bill:{bill}", True, (0, 0, 0))
+        text_bill = font.render(f"bill:{self.bill}", True, (0, 0, 0))
         screen.blit(text_bill, (50, 25))
+
+        for ap in self.apple:
+            if self.snake.head.colliderect(ap.rect):
+                self.bill += 1
+                self.apple.remove(ap)
+                self.apple.append(Food())
+
+        self.food.draw(screen)
         self.snake.draw(screen)
         self.pause_button.draw(screen)
         self.snake.move()
+        self.food.draw(screen)
 
         if self.snake.head.x > 750:
             print("update_1")
@@ -140,17 +152,20 @@ class Snake:
         elif keys[pygame.K_DOWN]:
             self.head.y += 20
 
-    #def update(self):
-
 
     def draw(self, screen):
         pygame.draw.rect(screen, (102, 102, 255), self.head)
 
+
 class Food:
     def __init__(self):
-        self.rect = (random.randint(0, 799),
-                     random.randint(0, 599),
-                     20, 20)
+        self.rect = pygame.Rect(random.randint(30, 750),
+                                random.randint(20, 530),
+                                20, 20)
+        self.color = (255, 0, 0)  # Червоний квадратик
+
+    def draw(self, screen):
+        pygame.draw.rect(screen, self.color, self.rect)
 
 class Button:
     def __init__(self, x, y, width, height, text, color):
