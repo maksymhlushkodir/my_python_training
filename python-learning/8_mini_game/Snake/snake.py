@@ -40,7 +40,10 @@ class GameState:
         pygame.display.update()
 
         for event in pygame.event.get():
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.start_button.is_clicked(mouse_pos, (0, 183, 81)):
                     self.change_state("playing")  # Перехід у гру
             elif event.type == pygame.KEYDOWN:
@@ -52,7 +55,6 @@ class GameState:
         clock.tick(60) # обмеження до 60 FPS
 
     def run_game(self):
-        bill = 0
 
         screen.fill((0, 102, 0))
         pygame.display.set_caption("Game")
@@ -74,19 +76,14 @@ class GameState:
         self.snake.draw(screen)
         self.pause_button.draw(screen)
         self.snake.move()
-        self.food.draw(screen)
 
         if self.snake.head.x > 750:
-            print("update_1")
             self.change_state("game_over")
         elif self.snake.head.x < 30:
-            print("update_2")
             self.change_state("game_over")
         elif self.snake.head.y > 540:
-            print("update_3")
             self.change_state("game_over")
         elif self.snake.head.y < 50:
-            print("update_4")
             self.change_state("game_over")
 
         for event in pygame.event.get():
@@ -125,7 +122,6 @@ class Snake:
         self.head = pygame.Rect(260, 300, 20, 20)
         self.tail = [pygame.Rect(240, 300, 20, 20)]  # Початковий хвіст
         self.status_game = GameState
-        #self.direction = "RIGHT"
 
     def move(self):
         # Оновлюємо хвіст
@@ -151,7 +147,6 @@ class Snake:
             self.head.y += 20
         elif keys[pygame.K_DOWN]:
             self.head.y += 20
-
 
     def draw(self, screen):
         pygame.draw.rect(screen, (102, 102, 255), self.head)
