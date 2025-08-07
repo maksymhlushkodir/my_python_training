@@ -16,10 +16,13 @@ class GameState:
 
         self.start_button = Button(300, 300, 200, 50, "Start", (0, 153, 51))  # Створюємо кнопку
         self.pause_button = Button(600, 15, 50, 50, "⏸", (102, 102, 153))
+        self.res_start_button = Button(300, 300, 200, 50, "rezero", (255, 153, 0))
+        self.menu_button = Button(300, 400, 200, 50, "menu", (153, 153, 102))
         self.snake = Snake()
         self.food = Food()
         self.bill = 0
         self.apple = []
+        self.game_counter = 0
 
         self.states = {
             "menu": self.run_menu,
@@ -56,6 +59,16 @@ class GameState:
 
     def run_game(self):
 
+        if self.game_counter == 0:
+            self.snake.head.x = 260
+            self.snake.head.y = 300
+            self.game_counter += 1
+
+        if self.snake.head.colliderect(self.food.rect):
+            self.snake.grow()  # Збільшуємо хвіст
+            self.bill += 1  # Додаємо очки
+            self.food = Food()  # Створюємо нову їжу
+
         screen.fill((0, 102, 0))
         pygame.display.set_caption("Game")
         game_zone = pygame.Rect(45, 65, 710, 490)
@@ -65,12 +78,7 @@ class GameState:
         pygame.draw.rect(screen, (0, 163, 61), game_zone.inflate(10, 10), border_radius=5)
         text_bill = font.render(f"bill:{self.bill}", True, (0, 0, 0))
         screen.blit(text_bill, (50, 25))
-
-        for ap in self.apple:
-            if self.snake.head.colliderect(ap.rect):
-                self.bill += 1
-                self.apple.remove(ap)
-                self.apple.append(Food())
+        mouse_pos = pygame.mouse.get_pos()
 
         self.food.draw(screen)
         self.snake.draw(screen)
@@ -91,7 +99,6 @@ class GameState:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                mouse_pos = pygame.mouse.get_pos()
                 if self.pause_button.is_clicked(mouse_pos, (71, 71, 107)):
                     print("OKAY")
             elif event.type == pygame.KEYDOWN:
@@ -105,7 +112,30 @@ class GameState:
         print("run pause")
 
     def run_game_over(self):
+        mouse_pos = pygame.mouse.get_pos()
         screen.fill((204, 51, 0))
+        self.res_start_button.draw(screen)
+        self.menu_button.draw(screen)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.res_start_button.is_clicked(mouse_pos, (204, 122, 0)):
+                    self.game_counter = 0
+                    self.change_state("playing")
+                elif self.menu_button.is_clicked(mouse_pos, (153, 153, 102)):
+                    self.game_counter = 0
+                    self.change_state("menu")
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_1:
+                    self.game_counter = 0
+                    self.change_state("playing")
+                elif event.key == pygame.K_RETURN:
+                    self.game_counter = 0
+                    self.change_state("playing")
+
         pygame.display.flip()
         clock.tick(60) # обмеження до 60 FPS
 
@@ -148,16 +178,24 @@ class Snake:
         elif keys[pygame.K_DOWN]:
             self.head.y += 20
 
+    def grow(self):
+        # Додаємо новий сегмент хвоста в кінець
+        last_segment = self.tail[-1]
+        new_segment = pygame.Rect(last_segment.x, last_segment.y, 20, 20)
+        self.tail.append(new_segment)
+
     def draw(self, screen):
         pygame.draw.rect(screen, (102, 102, 255), self.head)
+        for segment in self.tail:
+            pygame.draw.rect(screen, (51, 51, 204), segment)
 
 
 class Food:
     def __init__(self):
-        self.rect = pygame.Rect(random.randint(30, 750),
-                                random.randint(20, 530),
+        self.rect = pygame.Rect(random.randint(30, 720),
+                                random.randint(20, 500),
                                 20, 20)
-        self.color = (255, 0, 0)  # Червоний квадратик
+        self.color = (255, 51, 0)  # Червоний квадратик
 
     def draw(self, screen):
         pygame.draw.rect(screen, self.color, self.rect)
