@@ -62,12 +62,16 @@ class GameState:
         if self.game_counter == 0:
             self.snake.head.x = 260
             self.snake.head.y = 300
+            self.bill = 0
             self.game_counter += 1
+
 
         if self.snake.head.colliderect(self.food.rect):
             self.snake.grow()  # Збільшуємо хвіст
             self.bill += 1  # Додаємо очки
             self.food = Food()  # Створюємо нову їжу
+
+
 
         screen.fill((0, 102, 0))
         pygame.display.set_caption("Game")
@@ -189,11 +193,10 @@ class Snake:
         for segment in self.tail:
             pygame.draw.rect(screen, (51, 51, 204), segment)
 
-
 class Food:
     def __init__(self):
-        self.rect = pygame.Rect(random.randint(30, 720),
-                                random.randint(20, 500),
+        self.rect = pygame.Rect(random.randint(50, 740),
+                                random.randint(45, 520),
                                 20, 20)
         self.color = (255, 51, 0)  # Червоний квадратик
 
