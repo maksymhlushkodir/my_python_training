@@ -98,6 +98,9 @@ class GameState:
         elif self.snake.head.y < 50:
             self.change_state("game_over")
 
+        #if self.snake.head.colliderect(self.snake.tail):
+            #print("Snake colliderect work")
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -155,7 +158,7 @@ class Snake:
     def __init__(self):
         self.head = pygame.Rect(260, 300, 20, 20)
         self.tail = [pygame.Rect(240, 300, 20, 20)]  # Початковий хвіст
-        self.status_game = GameState
+        self.direction = "RIGHT"  # Початковий напрямок
 
     def move(self):
         # Оновлюємо хвіст
@@ -165,21 +168,26 @@ class Snake:
         self.tail[0].x, self.tail[0].y = self.head.x, self.head.y
 
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_a]:
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            if self.direction != "RIGHT":  # Щоб не повернутись назад
+                self.direction = "LEFT"
+        elif keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            if self.direction != "LEFT":
+                self.direction = "RIGHT"
+        elif keys[pygame.K_w] or keys[pygame.K_UP]:
+            if self.direction != "DOWN":
+                self.direction = "UP"
+        elif keys[pygame.K_s] or keys[pygame.K_DOWN]:
+            if self.direction != "UP":
+                self.direction = "DOWN"
+
+        if self.direction == "LEFT":
             self.head.x -= 20
-        elif keys[pygame.K_LEFT]:
-            self.head.x -= 20
-        elif keys[pygame.K_d]:
+        elif self.direction == "RIGHT":
             self.head.x += 20
-        elif keys[pygame.K_RIGHT]:
-            self.head.x += 20
-        elif keys[pygame.K_w]:
+        elif self.direction == "UP":
             self.head.y -= 20
-        elif keys[pygame.K_UP]:
-            self.head.y -= 20
-        elif keys[pygame.K_s]:
-            self.head.y += 20
-        elif keys[pygame.K_DOWN]:
+        elif self.direction == "DOWN":
             self.head.y += 20
 
     def grow(self):
