@@ -18,7 +18,7 @@ class GameState:
         self.pause_button = Button(600, 15, 50, 50, "⏸", (102, 102, 153))
         self.res_start_button = Button(300, 300, 200, 50, "rezero", (255, 153, 0))
         self.menu_button = Button(300, 400, 200, 50, "menu", (153, 153, 102))
-        self.snake = Snake()
+        self.snake_0 = Snake_0()
         self.food = Food()
         self.bill = 0
         self.apple = []
@@ -60,18 +60,16 @@ class GameState:
     def run_game(self):
 
         if self.game_counter == 0:
-            self.snake.head.x = 260
-            self.snake.head.y = 300
+            self.snake_0.head.x = 260
+            self.snake_0.head.y = 300
             self.bill = 0
+            self.snake_0.run = True
             self.game_counter += 1
 
-
-        if self.snake.head.colliderect(self.food.rect):
-            self.snake.grow()  # Збільшуємо хвіст
+        if self.snake_0.head.colliderect(self.food.rect):
+            self.snake_0.grow()  # Збільшуємо хвіст
             self.bill += 1  # Додаємо очки
             self.food = Food()  # Створюємо нову їжу
-
-
 
         screen.fill((0, 102, 0))
         pygame.display.set_caption("Game")
@@ -84,22 +82,24 @@ class GameState:
         screen.blit(text_bill, (50, 25))
         mouse_pos = pygame.mouse.get_pos()
 
-        self.food.draw(screen)
-        self.snake.draw(screen)
+
+        self.snake_0.draw(screen)
         self.pause_button.draw(screen)
-        self.snake.move()
+        self.snake_0.move()
+        self.snake_0.check_collision()
+        if self.snake_0.run == False:
+            #self.snake.tail.remove(self.snake.new_segment)
+            self.change_state("game_over")
+        self.food.draw(screen)
 
-        if self.snake.head.x > 750:
+        if self.snake_0.head.x > 750:
             self.change_state("game_over")
-        elif self.snake.head.x < 30:
+        elif self.snake_0.head.x < 30:
             self.change_state("game_over")
-        elif self.snake.head.y > 540:
+        elif self.snake_0.head.y > 540:
             self.change_state("game_over")
-        elif self.snake.head.y < 50:
+        elif self.snake_0.head.y < 50:
             self.change_state("game_over")
-
-        #if self.snake.head.colliderect(self.snake.tail):
-            #print("Snake colliderect work")
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -154,11 +154,12 @@ class GameState:
             self.state = new_state
             print(f"Перехід у стан: {self.state}")  # Для дебагу
 
-class Snake:
+class Snake_0:
     def __init__(self):
         self.head = pygame.Rect(260, 300, 20, 20)
         self.tail = [pygame.Rect(240, 300, 20, 20)]  # Початковий хвіст
         self.direction = "RIGHT"  # Початковий напрямок
+        self.run = True
 
     def move(self):
         # Оновлюємо хвіст
@@ -201,10 +202,15 @@ class Snake:
         for segment in self.tail:
             pygame.draw.rect(screen, (51, 51, 204), segment)
 
+    def check_collision(self):
+        for segment in self.tail:
+            if self.head.colliderect(segment):
+                self.run = False
+
 class Food:
     def __init__(self):
-        self.rect = pygame.Rect(random.randint(50, 740),
-                                random.randint(45, 520),
+        self.rect = pygame.Rect(random.randint(51, 740),
+                                random.randint(46, 520),
                                 20, 20)
         self.color = (255, 51, 0)  # Червоний квадратик
 
