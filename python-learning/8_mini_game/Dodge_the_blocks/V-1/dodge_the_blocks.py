@@ -140,12 +140,12 @@ time_game = 0
 time_game_in_seconds = 0
 
 rocket_frames = [
-    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket1.png"),
-    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket2.png"),
-    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket3.png"),
-    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket4.png"),
-    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket5.png"),
-    pygame.image.load("../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket6.png"),
+    pygame.image.load("../../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket1.png"),
+    pygame.image.load("../../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket2.png"),
+    pygame.image.load("../../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket3.png"),
+    pygame.image.load("../../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket4.png"),
+    pygame.image.load("../../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket5.png"),
+    pygame.image.load("../../../5_file-assets/0_assets/for_dodge_the_blocks/sprite/player/rocket6.png"),
 ]
 
 current_frame = 0
