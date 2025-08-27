@@ -2,6 +2,7 @@ import pygame
 from core.game_manager import GameState
 from settings import (SCREEN_HEIGHT, SCREEN_WIDTH, BG_COLOR, FPS)
 
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

@@ -12,7 +12,8 @@ class GameState:
         self.FPS = FPS
         self.button = Button
 
-        self.startButton = self.button(300, 400, 50, 200, "start", (0, 0, 0))
+        self.startButton = self.button(300, 400, 50, 200, "start",
+                                       (0, 0, 0), (255, 255, 255), 32)
 
         self.states = {
             "menu": self.run_menu,
@@ -23,13 +24,15 @@ class GameState:
         }
 
     def run_menu(self):
+        mouse_pos = pygame.mouse.get_pos()  # ← ПЕРЕНЕСИ СЮДИ!
         self.screen.fill(self.BG_COLOR)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                print("hello")
+                if self.startButton.is_clicked(mouse_pos):
+                    self.change_state("playing")
 
         self.startButton.draw(self.screen)
         pygame.display.flip()
