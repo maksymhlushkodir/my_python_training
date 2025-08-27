@@ -1,10 +1,18 @@
 import pygame
 import json
 import sys
+from .button import Button
+clock = pygame.time.Clock()
 
 class GameState:
-    def __init__(self):
+    def __init__(self, screen, BG_COLOR, FPS):
         self.state = "menu"
+        self.screen = screen
+        self.BG_COLOR = BG_COLOR
+        self.FPS = FPS
+        self.button = Button
+
+        self.startButton = self.button(300, 400, 50, 200, "start", (0, 0, 0))
 
         self.states = {
             "menu": self.run_menu,
@@ -15,7 +23,18 @@ class GameState:
         }
 
     def run_menu(self):
-        print("menu")
+        self.screen.fill(self.BG_COLOR)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                print("hello")
+
+        self.startButton.draw(self.screen)
+        pygame.display.flip()
+        clock.tick(self.FPS)  # обмеження до 60 FPS
+
 
     def run_game(self):
         print("game")
