@@ -18,6 +18,9 @@ class GameState:
         self.click_counter = 0
         self.counter_Experience = 0
 
+        self.manualButton = self.button(400, 500, 50, 200, "manual",
+                                      (255, 0, 0), (255, 255, 255), 32)
+
         self.mainButton = self.button(400, 300, 65, 200, "",
                                       (204, 51, 153), (204, 51, 153))
 
@@ -58,7 +61,10 @@ class GameState:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.startButton.is_clicked(mouse_pos):
                     self.change_state("playing")
+                elif self.manualButton.is_clicked(mouse_pos):
+                    self.change_state("manual")
 
+        self.manualButton.draw(self.screen)
         self.startButton.draw(self.screen)
         self.titleMenu.draw(self.screen)
         pygame.display.flip()
@@ -102,8 +108,20 @@ class GameState:
         print("tree")
 
     def run_man(self):
+        mouse_pos = pygame.mouse.get_pos()
         pygame.display.set_caption("man")
-        print("man")
+        self.screen.fill(self.BG_COLOR)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.backButton.is_clicked(mouse_pos):
+                    self.change_state("menu")
+
+        self.backButton.draw(self.screen)
+        clock.tick(self.FPS)
+        pygame.display.flip()
 
     def run_restart(self):
         pygame.display.set_caption("re:zero")
