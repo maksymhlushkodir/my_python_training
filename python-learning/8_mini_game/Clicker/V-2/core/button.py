@@ -23,3 +23,24 @@ class Button:
 
     def is_clicked(self, mouse_pos):
         return self.rect.collidepoint(mouse_pos)
+
+class Text:
+
+    def __init__(self, x, y, text, color=(255, 255, 255), font_size=32, font_name=None):
+        self.x = x
+        self.y = y
+        self.text = text
+        self.color = color
+        self.font = pygame.font.SysFont(font_name, font_size)
+        self.surface = self.font.render(self.text, True, self.color)
+        self.rect = self.surface.get_rect(center=(x, y))
+
+
+    def draw(self, surface):
+        surface.blit(self.surface, self.rect)
+
+    def update_text(self, new_text):
+        """Метод для оновлення тексту (наприклад, для лічильника)"""
+        self.text = new_text
+        self.surface = self.font.render(self.text, True, self.color)
+        self.rect = self.surface.get_rect(center=(self.x, self.y))
