@@ -4,6 +4,8 @@ import sys
 from .button import (Button, Text)
 clock = pygame.time.Clock()
 
+man_experience = """Every 100 clicks give you 1 Experience point. Invest them in developing your skills to become stronger!"""
+
 class GameState:
     def __init__(self, screen, BG_COLOR, FPS):
         self.state = "menu"
@@ -14,18 +16,28 @@ class GameState:
         self.text = Text
 
         self.click_counter = 0
-        self.counter_legendary_click = 0
+        self.counter_Experience = 0
 
-        self.mainButton = self.button(300, 300, 65, 200, "",
+        self.mainButton = self.button(400, 300, 65, 200, "",
                                       (204, 51, 153), (204, 51, 153))
-        self.text_click_counter = self.text(400, 250, f"clicks: {self.click_counter}", (0,0,0), 50)
 
-        self.startButton = self.button(300, 400, 50, 200, "start",
+        self.text_click_counter = self.text(500, 250, f"clicks: {self.click_counter}", (0,0,0), 50)
+        self.text_counter_Experience = self.text(500, 200, f"Experience: {self.counter_Experience}", (0,0,0), 50)
+
+        self.startButton = self.button(400, 400, 50, 200, "start",
                                        (0, 0, 0), (255, 255, 255), 32)
-        self.titleMenu = self.text(400, 250, "Clicker", (0, 0, 0), 100)
+        self.titleMenu = self.text(500, 250, "Clicker", (0, 0, 0), 100)
 
-        self.restartButton = self.button(600, 400, 50, 150, "restart",
+        self.restartButton = self.button(700, 400, 50, 150, "restart",
                                       (102, 102, 255), (255, 255, 255))
+
+        self.manRestartButton = self.button(700, 460, 20, 150, "",
+                                         (51, 102, 255))
+
+        self.backButton = self.button(400, 500, 50, 200, "back",
+                                      (0, 0, 0), (255, 255, 255), 32)
+
+        self.man_Experience = self.text(500, 200, f"{man_experience}", (0, 0, 0), 27)
 
         self.states = {
             "menu": self.run_menu,
@@ -64,12 +76,23 @@ class GameState:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.mainButton.is_clicked(mouse_pos):
                     self.click_counter += 1
-                    print(self.click_counter)
-
+                elif self.manRestartButton.is_clicked(mouse_pos):
+                    self.change_state("restart")
+                elif self.restartButton.is_clicked(mouse_pos):
+                    run_experience = True
+                    while run_experience:
+                        if self.click_counter >= 100:
+                            self.counter_Experience += 1
+                            self.click_counter -= 100
+                        elif self.click_counter < 100:
+                            run_experience = False
 
         self.restartButton.draw(self.screen)
+        self.manRestartButton.draw(self.screen)
         self.mainButton.draw(self.screen)
         self.text_click_counter.draw(self.screen)
+        self.text_counter_Experience.draw(self.screen)
+        self.text_counter_Experience.update_text(f"Experience: {self.counter_Experience}")
         self.text_click_counter.update_text(f"clicks: {self.click_counter}")
         pygame.display.flip()
         clock.tick(self.FPS)  # обмеження до 60 FPS
@@ -84,7 +107,21 @@ class GameState:
 
     def run_restart(self):
         pygame.display.set_caption("re:zero")
-        print("restart")
+        mouse_pos = pygame.mouse.get_pos()  # ← ПЕРЕНЕСИ СЮДИ!
+        self.screen.fill(self.BG_COLOR)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.backButton.is_clicked(mouse_pos):
+                    self.change_state("playing")
+
+        self.backButton.draw(self.screen)
+        self.man_Experience.draw(self.screen)
+        clock.tick(self.FPS)
+        pygame.display.flip()
+
 
     def change_state(self, new_state):
         if new_state in self.states:
