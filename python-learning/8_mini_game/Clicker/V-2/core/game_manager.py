@@ -15,7 +15,7 @@ class GameState:
         self.button = Button
         self.text = Text
 
-        self.click_counter = 0
+        self.click_counter = 0.00
         self.counter_Experience = 0
 
         self.manualButton = self.button(400, 500, 50, 200, "manual",
@@ -25,7 +25,7 @@ class GameState:
                                       (204, 51, 153), (204, 51, 153))
 
         self.text_click_counter = self.text(500, 250, f"clicks: {self.click_counter}", (0,0,0), 50)
-        self.text_counter_Experience = self.text(500, 200, f"Experience: {self.counter_Experience}", (0,0,0), 50)
+        self.text_counter_Experience = self.text(500, 200, f"Experience: {self.counter_Experience}",(0,0,0), 50)
 
         self.startButton = self.button(400, 400, 50, 200, "start",
                                        (0, 0, 0), (255, 255, 255), 32)
@@ -37,8 +37,11 @@ class GameState:
         self.manRestartButton = self.button(700, 460, 20, 150, "",
                                          (51, 102, 255))
 
-        self.backButton = self.button(400, 500, 50, 200, "back",
+        self.backButton = self.button(50, 50, 50, 75, "back",
                                       (0, 0, 0), (255, 255, 255), 32)
+
+        self.treeButton = self.button(200, 400, 50, 150, "tree",
+                                      (51, 204, 51), (255, 255, 255), 32)
 
         self.man_Experience = self.text(500, 200, f"{man_experience}", (0, 0, 0), 27)
 
@@ -63,7 +66,6 @@ class GameState:
                     self.change_state("playing")
                 elif self.manualButton.is_clicked(mouse_pos):
                     self.change_state("manual")
-
         self.manualButton.draw(self.screen)
         self.startButton.draw(self.screen)
         self.titleMenu.draw(self.screen)
@@ -92,7 +94,12 @@ class GameState:
                             self.click_counter -= 100
                         elif self.click_counter < 100:
                             run_experience = False
-
+                elif self.treeButton.is_clicked(mouse_pos):
+                    self.change_state("tree")
+                elif self.backButton.is_clicked(mouse_pos):
+                    self.change_state("menu")
+        self.backButton.draw(self.screen)
+        self.treeButton.draw(self.screen)
         self.restartButton.draw(self.screen)
         self.manRestartButton.draw(self.screen)
         self.mainButton.draw(self.screen)
@@ -104,11 +111,23 @@ class GameState:
         clock.tick(self.FPS)  # обмеження до 60 FPS
 
     def run_tree(self):
+        mouse_pos = pygame.mouse.get_pos() # ← ПЕРЕНЕСИ СЮДИ!
         pygame.display.set_caption("upgrade tree")
-        print("tree")
+        self.screen.fill(self.BG_COLOR)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                if self.backButton.is_clicked(mouse_pos):
+                    self.change_state("playing")
+        self.screen.fill(self.BG_COLOR)
+        self.backButton.draw(self.screen)
+        clock.tick(self.FPS) # обмеження до 60 FPS
+        pygame.display.flip()
 
     def run_man(self):
-        mouse_pos = pygame.mouse.get_pos()
+        mouse_pos = pygame.mouse.get_pos() # ← ПЕРЕНЕСИ СЮДИ!
         pygame.display.set_caption("man")
         self.screen.fill(self.BG_COLOR)
         for event in pygame.event.get():
@@ -118,9 +137,8 @@ class GameState:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.backButton.is_clicked(mouse_pos):
                     self.change_state("menu")
-
         self.backButton.draw(self.screen)
-        clock.tick(self.FPS)
+        clock.tick(self.FPS) # обмеження до 60 FPS
         pygame.display.flip()
 
     def run_restart(self):
@@ -134,12 +152,10 @@ class GameState:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if self.backButton.is_clicked(mouse_pos):
                     self.change_state("playing")
-
         self.backButton.draw(self.screen)
         self.man_Experience.draw(self.screen)
-        clock.tick(self.FPS)
+        clock.tick(self.FPS) # обмеження до 60 FPS
         pygame.display.flip()
-
 
     def change_state(self, new_state):
         if new_state in self.states:

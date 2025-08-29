@@ -1,0 +1,31 @@
+What should be added?: 
+
+ 1.add skill tree:
+	1.skill tree screen
+	2.add skills:
+		1.ordinary:
+			1.auto clicker
+			2.amplified clicks
+			3.Click multiplier
+		2.Experience:
+			// farmer
+			1. "employee of the month" : improves the performance of the auto clicker by 10% (max-lv:5)
+			2. "optimization" : reduces the cost per click multiplier by 15% (max-lv:3)
+			3. "golden strike" : Every 5 minutes gives 1000 clicks (max-lv:1)
+			// warrior
+			1. "impact force" : increases by +1 click when the player presses the button (max-lv:5)
+			2. "critical hit" : 5% chance for x10 clicks after clicked (each subsequent level increases the chance by +5%) (max-lv:5)
+ 			3. "anger" : After every 100 clicks, the player receives x3 clicks for 10 seconds. (max-lv:1) 
+			//sorcerer
+			1. "" : The cost of upgrading basic skills has been reduced from 50% to 30% (max-lv:1)
+			2. "" : increases the speed of automatic clicking by +0.1 second (max-lv:100)
+			3. "Ctrl + S" : Reduction of conversion price by -25 (max-lv:1)
+	3.add class:
+		1.farmer
+		2.warrior
+		3.sorcerer
+2.add save
+3.add manual
+4.add normal GUI
+		
+		
